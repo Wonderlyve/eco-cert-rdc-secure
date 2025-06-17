@@ -17,7 +17,8 @@ const RegisterPage = () => {
     confirmPassword: '',
     name: '',
     role: '' as UserRole | '',
-    institution: ''
+    institution: '',
+    ministry: '' as 'education' | 'land' | ''
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -26,7 +27,9 @@ const RegisterPage = () => {
     { value: 'student', label: 'Étudiant' },
     { value: 'citizen', label: 'Citoyen' },
     { value: 'employer', label: 'Employeur' },
-    { value: 'establishment', label: 'Établissement' }
+    { value: 'establishment', label: 'Établissement' },
+    { value: 'ministry_education', label: 'Ministère de l\'Éducation' },
+    { value: 'ministry_land', label: 'Ministère des Affaires Foncières' }
   ];
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -52,17 +55,25 @@ const RegisterPage = () => {
       return;
     }
 
+    if (['ministry_education', 'ministry_land'].includes(formData.role) && !formData.ministry) {
+      toast.error('Le type de ministère est requis');
+      return;
+    }
+
     try {
       await register({
         email: formData.email,
         password: formData.password,
         name: formData.name,
         role: formData.role as UserRole,
-        institution: formData.institution || undefined
+        institution: formData.institution || undefined,
+        ministry: formData.ministry || undefined
       });
       
       if (formData.role === 'establishment') {
         toast.success('Inscription réussie ! Votre compte sera vérifié sous 24-48h.');
+      } else if (['ministry_education', 'ministry_land'].includes(formData.role)) {
+        toast.success('Inscription réussie ! Accès ministériel activé.');
       } else {
         toast.success('Inscription réussie ! Bienvenue sur eCert RDC.');
       }
@@ -79,10 +90,13 @@ const RegisterPage = () => {
   };
 
   const handleRoleChange = (value: string) => {
+    const newRole = value as UserRole;
     setFormData(prev => ({
       ...prev,
-      role: value as UserRole,
-      institution: value === 'establishment' ? prev.institution : ''
+      role: newRole,
+      institution: newRole === 'establishment' ? prev.institution : '',
+      ministry: newRole === 'ministry_education' ? 'education' : 
+                newRole === 'ministry_land' ? 'land' : ''
     }));
   };
 
@@ -267,10 +281,14 @@ const RegisterPage = () => {
               </p>
             </div>
 
-            {formData.role === 'establishment' && (
+            {(formData.role === 'establishment' || ['ministry_education', 'ministry_land'].includes(formData.role)) && (
               <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                 <p className="text-xs text-yellow-800">
-                  <strong>Note :</strong> Les comptes d'établissement nécessitent une vérification manuelle qui peut prendre 24-48h.
+                  <strong>Note :</strong> {
+                    formData.role === 'establishment' 
+                      ? 'Les comptes d\'établissement nécessitent une vérification manuelle qui peut prendre 24-48h.'
+                      : 'Les comptes ministériels sont pré-vérifiés et disposent de permissions étendues.'
+                  }
                 </p>
               </div>
             )}

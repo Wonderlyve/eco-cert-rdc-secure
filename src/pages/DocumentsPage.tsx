@@ -18,7 +18,9 @@ import {
   MapPin,
   Building,
   CheckCircle,
-  AlertCircle
+  AlertCircle,
+  School,
+  Landmark
 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
@@ -26,12 +28,13 @@ import { toast } from 'sonner';
 interface Document {
   id: string;
   title: string;
-  type: 'diploma' | 'certificate' | 'land_title';
+  type: 'diploma' | 'certificate' | 'land_title' | 'land_certificate';
   institution: string;
   date: string;
   status: 'valid' | 'pending' | 'revoked';
   qrCode: string;
   recipient?: string;
+  ministry?: 'education' | 'land';
 }
 
 const DocumentsPage = () => {
@@ -40,7 +43,7 @@ const DocumentsPage = () => {
   const [filterType, setFilterType] = useState<string>('all');
   const [filterYear, setFilterYear] = useState<string>('all');
 
-  // Documents mockés
+  // Documents mockés incluant les nouveaux types ministériels
   const mockDocuments: Document[] = [
     {
       id: 'ECR-2024-001',
@@ -50,7 +53,8 @@ const DocumentsPage = () => {
       date: '2024-06-15',
       status: 'valid',
       qrCode: 'QR123456789',
-      recipient: 'Jean Kabila'
+      recipient: 'Jean Kabila',
+      ministry: 'education'
     },
     {
       id: 'ECR-2024-002',
@@ -60,17 +64,30 @@ const DocumentsPage = () => {
       date: '2024-05-20',
       status: 'valid',
       qrCode: 'QR987654321',
-      recipient: 'Marie Tshisekedi'
+      recipient: 'Marie Tshisekedi',
+      ministry: 'education'
     },
     {
       id: 'ECR-2023-015',
       title: 'Titre Foncier - Parcelle 123',
       type: 'land_title',
-      institution: 'Service des Titres Fonciers',
+      institution: 'Ministère des Affaires Foncières',
       date: '2023-12-10',
       status: 'valid',
       qrCode: 'QR456789123',
-      recipient: 'Paul Mukendi'
+      recipient: 'Paul Mukendi',
+      ministry: 'land'
+    },
+    {
+      id: 'ECR-2024-003',
+      title: 'Certificat de Propriété Foncière',
+      type: 'land_certificate',
+      institution: 'Ministère des Affaires Foncières',
+      date: '2024-03-15',
+      status: 'valid',
+      qrCode: 'QR789123456',
+      recipient: 'Sylvie Mulamba',
+      ministry: 'land'
     }
   ];
 
@@ -81,6 +98,8 @@ const DocumentsPage = () => {
       case 'certificate':
         return <FileText className="w-5 h-5" />;
       case 'land_title':
+        return <Landmark className="w-5 h-5" />;
+      case 'land_certificate':
         return <MapPin className="w-5 h-5" />;
       default:
         return <FileText className="w-5 h-5" />;
@@ -122,35 +141,95 @@ const DocumentsPage = () => {
     toast.success('Lien de partage copié dans le presse-papiers');
   };
 
-  const filteredDocuments = mockDocuments.filter(doc => {
-    const matchesSearch = doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         doc.institution.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         (doc.recipient && doc.recipient.toLowerCase().includes(searchTerm.toLowerCase()));
+  // Filtrer les documents selon le rôle de l'utilisateur
+  const getFilteredDocuments = () => {
+    let documents = mockDocuments;
     
-    const matchesType = filterType === 'all' || doc.type === filterType;
+    // Filtrer par rôle utilisateur
+    if (user?.role === 'ministry_education') {
+      documents = documents.filter(doc => doc.ministry === 'education');
+    } else if (user?.role === 'ministry_land') {
+      documents = documents.filter(doc => doc.ministry === 'land');
+    }
     
-    const docYear = new Date(doc.date).getFullYear().toString();
-    const matchesYear = filterYear === 'all' || docYear === filterYear;
-    
-    return matchesSearch && matchesType && matchesYear;
-  });
+    // Appliquer les filtres de recherche
+    return documents.filter(doc => {
+      const matchesSearch = doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           doc.institution.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           (doc.recipient && doc.recipient.toLowerCase().includes(searchTerm.toLowerCase()));
+      
+      const matchesType = filterType === 'all' || doc.type === filterType;
+      
+      const docYear = new Date(doc.date).getFullYear().toString();
+      const matchesYear = filterYear === 'all' || docYear === filterYear;
+      
+      return matchesSearch && matchesType && matchesYear;
+    });
+  };
+
+  const filteredDocuments = getFilteredDocuments();
+
+  const getDocumentTypes = () => {
+    if (user?.role === 'ministry_education') {
+      return [
+        { value: 'all', label: 'Tous les types' },
+        { value: 'diploma', label: 'Diplômes' },
+        { value: 'certificate', label: 'Certificats' }
+      ];
+    } else if (user?.role === 'ministry_land') {
+      return [
+        { value: 'all', label: 'Tous les types' },
+        { value: 'land_title', label: 'Titres fonciers' },
+        { value: 'land_certificate', label: 'Certificats de propriété' }
+      ];
+    } else {
+      return [
+        { value: 'all', label: 'Tous les types' },
+        { value: 'diploma', label: 'Diplômes' },
+        { value: 'certificate', label: 'Certificats' },
+        { value: 'land_title', label: 'Titres fonciers' },
+        { value: 'land_certificate', label: 'Certificats de propriété' }
+      ];
+    }
+  };
+
+  const getPageTitle = () => {
+    if (user?.role === 'ministry_education') {
+      return 'Documents éducatifs';
+    } else if (user?.role === 'ministry_land') {
+      return 'Documents fonciers';
+    } else if (user?.role === 'establishment') {
+      return 'Gestion des documents';
+    } else {
+      return 'Mes documents';
+    }
+  };
+
+  const getPageDescription = () => {
+    if (user?.role === 'ministry_education') {
+      return 'Gérez les diplômes et certificats du système éducatif';
+    } else if (user?.role === 'ministry_land') {
+      return 'Gérez les titres fonciers et certificats de propriété';
+    } else if (user?.role === 'establishment') {
+      return 'Gérez les diplômes et certificats de votre établissement';
+    } else {
+      return 'Consultez et téléchargez vos documents certifiés';
+    }
+  };
 
   return (
     <div className="p-4 lg:p-8 space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">
-            {user?.role === 'establishment' ? 'Gestion des documents' : 'Mes documents'}
+            {getPageTitle()}
           </h1>
           <p className="text-gray-600 mt-1">
-            {user?.role === 'establishment' 
-              ? 'Gérez les diplômes et certificats de votre établissement'
-              : 'Consultez et téléchargez vos documents certifiés'
-            }
+            {getPageDescription()}
           </p>
         </div>
         
-        {user?.role === 'establishment' && (
+        {(['establishment', 'ministry_education', 'ministry_land'].includes(user?.role || '')) && (
           <Button className="mt-4 sm:mt-0 bg-blue-600 hover:bg-blue-700">
             <Plus className="w-4 h-4 mr-2" />
             Nouveau document
@@ -180,10 +259,11 @@ const DocumentsPage = () => {
                 <SelectValue placeholder="Type de document" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tous les types</SelectItem>
-                <SelectItem value="diploma">Diplômes</SelectItem>
-                <SelectItem value="certificate">Certificats</SelectItem>
-                <SelectItem value="land_title">Titres fonciers</SelectItem>
+                {getDocumentTypes().map((type) => (
+                  <SelectItem key={type.value} value={type.value}>
+                    {type.label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
 
@@ -257,7 +337,7 @@ const DocumentsPage = () => {
                         </div>
                       </div>
                       
-                      {doc.recipient && user?.role === 'establishment' && (
+                      {doc.recipient && ['establishment', 'ministry_education', 'ministry_land'].includes(user?.role || '') && (
                         <p className="text-sm text-gray-600">
                           <strong>Bénéficiaire:</strong> {doc.recipient}
                         </p>
@@ -306,8 +386,8 @@ const DocumentsPage = () => {
         )}
       </div>
 
-      {/* Statistiques pour les établissements */}
-      {user?.role === 'establishment' && filteredDocuments.length > 0 && (
+      {/* Statistiques pour les ministères et établissements */}
+      {(['establishment', 'ministry_education', 'ministry_land'].includes(user?.role || '')) && filteredDocuments.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Card>
             <CardContent className="p-4 text-center">

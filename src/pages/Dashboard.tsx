@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,7 +13,9 @@ import {
   Plus,
   Building,
   GraduationCap,
-  MapPin
+  MapPin,
+  School,
+  Landmark
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -27,6 +28,10 @@ const Dashboard = () => {
         return <AdminDashboard />;
       case 'establishment':
         return <EstablishmentDashboard />;
+      case 'ministry_education':
+        return <MinistryEducationDashboard />;
+      case 'ministry_land':
+        return <MinistryLandDashboard />;
       case 'student':
       case 'citizen':
         return <UserDashboard />;
@@ -64,6 +69,16 @@ const QuickActions = ({ role }: { role?: string }) => {
       case 'establishment':
         return [
           { label: 'Nouveau diplôme', href: '/documents?action=create', icon: Plus },
+          { label: 'Scanner QR', href: '/scan', icon: QrCode }
+        ];
+      case 'ministry_education':
+        return [
+          { label: 'Nouveau diplôme', href: '/documents?action=create&type=education', icon: School },
+          { label: 'Scanner QR', href: '/scan', icon: QrCode }
+        ];
+      case 'ministry_land':
+        return [
+          { label: 'Nouveau titre', href: '/documents?action=create&type=land', icon: Landmark },
           { label: 'Scanner QR', href: '/scan', icon: QrCode }
         ];
       default:
@@ -443,6 +458,222 @@ const EmployerDashboard = () => {
                   Vérification manuelle
                 </Link>
               </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+};
+
+const MinistryEducationDashboard = () => {
+  const stats = [
+    { title: 'Diplômes émis', value: '1,247', icon: School, color: 'bg-blue-500' },
+    { title: 'Établissements', value: '89', icon: Building, color: 'bg-green-500' },
+    { title: 'Vérifications', value: '3,456', icon: CheckCircle, color: 'bg-purple-500' },
+    { title: 'Ce mois', value: '156', icon: TrendingUp, color: 'bg-yellow-500' },
+  ];
+
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {stats.map((stat) => {
+          const IconComponent = stat.icon;
+          return (
+            <Card key={stat.title} className="relative overflow-hidden">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">{stat.title}</p>
+                    <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                  </div>
+                  <div className={`p-3 rounded-full ${stat.color}`}>
+                    <IconComponent className="w-6 h-6 text-white" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle>Gestion des documents éducatifs</CardTitle>
+            <CardDescription>Créez et gérez les diplômes et certificats</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Button asChild variant="outline" className="h-20 flex-col space-y-2">
+                <Link to="/documents?action=create&type=diploma">
+                  <GraduationCap className="w-6 h-6" />
+                  <span>Nouveau diplôme</span>
+                </Link>
+              </Button>
+              <Button asChild variant="outline" className="h-20 flex-col space-y-2">
+                <Link to="/documents?action=create&type=certificate">
+                  <FileText className="w-6 h-6" />
+                  <span>Nouveau certificat</span>
+                </Link>
+              </Button>
+              <Button asChild variant="outline" className="h-20 flex-col space-y-2">
+                <Link to="/documents?filter=education">
+                  <School className="w-6 h-6" />
+                  <span>Documents éducatifs</span>
+                </Link>
+              </Button>
+              <Button asChild variant="outline" className="h-20 flex-col space-y-2">
+                <Link to="/scan">
+                  <QrCode className="w-6 h-6" />
+                  <span>Scanner QR</span>
+                </Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Documents récents</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <GraduationCap className="w-4 h-4 text-blue-600" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium truncate">Licence en Informatique</p>
+                  <p className="text-xs text-gray-500">Université de Kinshasa - Aujourd'hui</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                  <FileText className="w-4 h-4 text-green-600" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium truncate">Certificat de Formation</p>
+                  <p className="text-xs text-gray-500">IFASIC - Hier</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                  <GraduationCap className="w-4 h-4 text-purple-600" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium truncate">Master en Gestion</p>
+                  <p className="text-xs text-gray-500">UPC - Il y a 2 jours</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+};
+
+const MinistryLandDashboard = () => {
+  const stats = [
+    { title: 'Titres fonciers', value: '2,847', icon: Landmark, color: 'bg-blue-500' },
+    { title: 'Parcelles', value: '15,234', icon: MapPin, color: 'bg-green-500' },
+    { title: 'Vérifications', value: '1,876', icon: CheckCircle, color: 'bg-purple-500' },
+    { title: 'Ce mois', value: '89', icon: TrendingUp, color: 'bg-yellow-500' },
+  ];
+
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {stats.map((stat) => {
+          const IconComponent = stat.icon;
+          return (
+            <Card key={stat.title} className="relative overflow-hidden">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">{stat.title}</p>
+                    <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                  </div>
+                  <div className={`p-3 rounded-full ${stat.color}`}>
+                    <IconComponent className="w-6 h-6 text-white" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle>Gestion foncière</CardTitle>
+            <CardDescription>Créez et gérez les titres fonciers</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Button asChild variant="outline" className="h-20 flex-col space-y-2">
+                <Link to="/documents?action=create&type=land_title">
+                  <Landmark className="w-6 h-6" />
+                  <span>Nouveau titre foncier</span>
+                </Link>
+              </Button>
+              <Button asChild variant="outline" className="h-20 flex-col space-y-2">
+                <Link to="/documents?action=create&type=land_certificate">
+                  <MapPin className="w-6 h-6" />
+                  <span>Certificat de propriété</span>
+                </Link>
+              </Button>
+              <Button asChild variant="outline" className="h-20 flex-col space-y-2">
+                <Link to="/documents?filter=land">
+                  <FileText className="w-6 h-6" />
+                  <span>Documents fonciers</span>
+                </Link>
+              </Button>
+              <Button asChild variant="outline" className="h-20 flex-col space-y-2">
+                <Link to="/scan">
+                  <QrCode className="w-6 h-6" />
+                  <span>Scanner QR</span>
+                </Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Titres récents</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <Landmark className="w-4 h-4 text-blue-600" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium truncate">Titre Foncier - Parcelle 456</p>
+                  <p className="text-xs text-gray-500">Kinshasa, Gombe - Aujourd'hui</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                  <MapPin className="w-4 h-4 text-green-600" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium truncate">Certificat de Propriété</p>
+                  <p className="text-xs text-gray-500">Lubumbashi - Hier</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                  <Landmark className="w-4 h-4 text-purple-600" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium truncate">Titre Foncier - Parcelle 789</p>
+                  <p className="text-xs text-gray-500">Matadi - Il y a 2 jours</p>
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>

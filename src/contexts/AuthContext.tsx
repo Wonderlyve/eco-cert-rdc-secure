@@ -1,7 +1,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-export type UserRole = 'admin' | 'establishment' | 'student' | 'employer' | 'citizen';
+export type UserRole = 'admin' | 'establishment' | 'student' | 'employer' | 'citizen' | 'ministry_education' | 'ministry_land';
 
 export interface User {
   id: string;
@@ -9,6 +9,7 @@ export interface User {
   name: string;
   role: UserRole;
   institution?: string;
+  ministry?: 'education' | 'land';
   verified: boolean;
 }
 
@@ -26,6 +27,7 @@ interface RegisterData {
   name: string;
   role: UserRole;
   institution?: string;
+  ministry?: 'education' | 'land';
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -57,14 +59,46 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Simulation d'authentification (à remplacer par vraie API)
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    const mockUser: User = {
-      id: '1',
-      email,
-      name: email === 'admin@ecert.cd' ? 'Administrateur' : 'Utilisateur Test',
-      role: email === 'admin@ecert.cd' ? 'admin' : 'student',
-      institution: 'Université de Kinshasa',
-      verified: true
-    };
+    let mockUser: User;
+    
+    if (email === 'admin@ecert.cd') {
+      mockUser = {
+        id: '1',
+        email,
+        name: 'Administrateur',
+        role: 'admin',
+        verified: true
+      };
+    } else if (email === 'education@minepsp.cd') {
+      mockUser = {
+        id: '2',
+        email,
+        name: 'Ministère de l\'Éducation',
+        role: 'ministry_education',
+        ministry: 'education',
+        institution: 'Ministère de l\'Enseignement Primaire, Secondaire et Professionnel',
+        verified: true
+      };
+    } else if (email === 'foncier@ministere.cd') {
+      mockUser = {
+        id: '3',
+        email,
+        name: 'Ministère des Affaires Foncières',
+        role: 'ministry_land',
+        ministry: 'land',
+        institution: 'Ministère des Affaires Foncières',
+        verified: true
+      };
+    } else {
+      mockUser = {
+        id: '4',
+        email,
+        name: 'Utilisateur Test',
+        role: 'student',
+        institution: 'Université de Kinshasa',
+        verified: true
+      };
+    }
     
     const mockToken = 'mock_jwt_token_' + Date.now();
     
@@ -86,7 +120,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       name: userData.name,
       role: userData.role,
       institution: userData.institution,
-      verified: userData.role !== 'establishment' // Les établissements nécessitent vérification manuelle
+      ministry: userData.ministry,
+      verified: ['ministry_education', 'ministry_land'].includes(userData.role) ? true : userData.role !== 'establishment'
     };
     
     const mockToken = 'mock_jwt_token_' + Date.now();
