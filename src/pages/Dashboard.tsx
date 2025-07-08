@@ -43,22 +43,35 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="p-4 lg:p-8 space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">
-            Tableau de bord
-          </h1>
-          <p className="text-gray-600 mt-1">
-            Bienvenue, {user?.name}
-          </p>
+    <div className="relative min-h-screen">
+      {/* Background Image */}
+      <div 
+        className="fixed inset-0 bg-center bg-no-repeat bg-contain opacity-10 pointer-events-none z-0"
+        style={{
+          backgroundImage: 'url(/lovable-uploads/1f2aad9e-6320-432d-ac48-3b04163488b7.png)',
+          backgroundSize: 'auto 50%',
+          backgroundPosition: 'center center'
+        }}
+      />
+      
+      {/* Content */}
+      <div className="relative z-10 p-4 lg:p-8 space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">
+              Tableau de bord
+            </h1>
+            <p className="text-gray-600 mt-1">
+              Bienvenue, {user?.name}
+            </p>
+          </div>
+          <div className="mt-4 sm:mt-0">
+            <QuickActions role={user?.role} />
+          </div>
         </div>
-        <div className="mt-4 sm:mt-0">
-          <QuickActions role={user?.role} />
-        </div>
-      </div>
 
-      {getDashboardContent()}
+        {getDashboardContent()}
+      </div>
     </div>
   );
 };
