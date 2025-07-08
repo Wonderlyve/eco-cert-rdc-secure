@@ -10,6 +10,7 @@ import LoginPage from '@/pages/LoginPage';
 import RegisterPage from '@/pages/RegisterPage';
 import Dashboard from '@/pages/Dashboard';
 import DocumentsPage from '@/pages/DocumentsPage';
+import CreateDocumentPage from '@/pages/CreateDocumentPage';
 import VerificationPage from '@/pages/VerificationPage';
 import ScanPage from '@/pages/ScanPage';
 import PaymentPage from '@/pages/PaymentPage';
@@ -60,6 +61,11 @@ const AppRoutes = () => {
       <Route path="/documents" element={
         <ProtectedRoute>
           <DocumentsPage />
+        </ProtectedRoute>
+      } />
+      <Route path="/create-document" element={
+        <ProtectedRoute>
+          <CreateDocumentPage />
         </ProtectedRoute>
       } />
       <Route path="/scan" element={

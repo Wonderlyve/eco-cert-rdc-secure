@@ -13,7 +13,8 @@ import {
   X,
   Shield,
   GraduationCap,
-  IdCard
+  IdCard,
+  Plus
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -25,6 +26,8 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const navigation = [
     { name: 'Tableau de bord', href: '/dashboard', icon: Home },
     { name: 'Documents', href: '/documents', icon: FileText },
+    { name: 'Créer document', href: '/create-document', icon: Plus, 
+      roles: ['establishment', 'ministry_education', 'ministry_land'] },
     { name: 'Carte Élève', href: '/student-card', icon: IdCard },
     { name: 'Scanner', href: '/scan', icon: QrCode },
     { name: 'Paiements', href: '/payment', icon: CreditCard },
@@ -32,6 +35,12 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   ];
 
   const isActive = (path: string) => location.pathname === path;
+
+  const getVisibleNavigation = () => {
+    return navigation.filter(item => 
+      !item.roles || item.roles.includes(user?.role || '')
+    );
+  };
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -81,7 +90,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         </div>
 
         <nav className="mt-6 px-4 space-y-2">
-          {navigation.map((item) => {
+          {getVisibleNavigation().map((item) => {
             const Icon = item.icon;
             return (
               <Link
