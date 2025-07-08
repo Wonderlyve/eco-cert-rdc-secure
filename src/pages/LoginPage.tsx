@@ -56,31 +56,32 @@ const LoginPage = () => {
       <div className="relative z-20 w-full max-w-md">
         {/* Logo et titre */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-yellow-400 to-red-500 rounded-2xl mb-4 shadow-lg">
-            <Shield className="w-8 h-8 text-white" />
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-2xl mb-4 shadow-lg">
+            <Shield className="w-8 h-8 text-blue-900" />
           </div>
           <h1 className="text-3xl font-bold text-white mb-2">eCert RDC</h1>
-          <p className="text-blue-200">Certification numérique sécurisée</p>
+          <p className="text-yellow-400 font-medium">Certification numérique sécurisée</p>
         </div>
 
-        <Card className="shadow-2xl border-0 bg-white/95 backdrop-blur-sm">
-          <CardHeader className="space-y-1 pb-6">
-            <CardTitle className="text-2xl font-bold text-center text-gray-900">
+        {/* Section de connexion transparente */}
+        <div className="bg-transparent border border-white/20 backdrop-blur-sm rounded-lg shadow-2xl">
+          <div className="space-y-1 pb-6 pt-6 px-6">
+            <h2 className="text-2xl font-bold text-center text-white">
               Connexion
-            </CardTitle>
-            <CardDescription className="text-center text-gray-600">
+            </h2>
+            <p className="text-center text-white/80">
               Accédez à votre espace personnel
-            </CardDescription>
-          </CardHeader>
+            </p>
+          </div>
           
-          <CardContent>
+          <div className="px-6 pb-6">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <label htmlFor="email" className="text-sm font-medium text-gray-700">
+                <label htmlFor="email" className="text-sm font-medium text-white">
                   Adresse email
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Mail className="absolute left-3 top-3 h-4 w-4 text-white/60" />
                   <Input
                     id="email"
                     name="email"
@@ -88,18 +89,18 @@ const LoginPage = () => {
                     placeholder="votre@email.com"
                     value={formData.email}
                     onChange={handleChange}
-                    className="pl-10 h-12"
+                    className="pl-10 h-12 bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-yellow-400 focus:ring-yellow-400"
                     disabled={isLoading}
                   />
                 </div>
               </div>
               
               <div className="space-y-2">
-                <label htmlFor="password" className="text-sm font-medium text-gray-700">
+                <label htmlFor="password" className="text-sm font-medium text-white">
                   Mot de passe
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-white/60" />
                   <Input
                     id="password"
                     name="password"
@@ -107,13 +108,13 @@ const LoginPage = () => {
                     placeholder="••••••••"
                     value={formData.password}
                     onChange={handleChange}
-                    className="pl-10 pr-10 h-12"
+                    className="pl-10 pr-10 h-12 bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-yellow-400 focus:ring-yellow-400"
                     disabled={isLoading}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                    className="absolute right-3 top-3 text-white/60 hover:text-white"
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
@@ -122,12 +123,12 @@ const LoginPage = () => {
 
               <Button
                 type="submit"
-                className="w-full h-12 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium shadow-lg"
+                className="w-full h-12 bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-blue-900 font-medium shadow-lg border-0"
                 disabled={isLoading}
               >
                 {isLoading ? (
                   <div className="flex items-center">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-900 mr-2"></div>
                     Connexion...
                   </div>
                 ) : (
@@ -137,23 +138,23 @@ const LoginPage = () => {
             </form>
 
             <div className="mt-6 text-center">
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-white/80">
                 Pas encore de compte ?{' '}
                 <Link
                   to="/register"
-                  className="font-medium text-blue-600 hover:text-blue-500 transition-colors"
+                  className="font-medium text-yellow-400 hover:text-yellow-300 transition-colors"
                 >
                   Créer un compte
                 </Link>
               </p>
             </div>
 
-            <div className="mt-4 pt-4 border-t border-gray-200">
-              <p className="text-xs text-gray-500 text-center">
+            <div className="mt-4 pt-4 border-t border-white/20">
+              <p className="text-xs text-white/70 text-center">
                 Accès public à la vérification :{' '}
                 <Link
                   to="/verification"
-                  className="text-blue-600 hover:text-blue-500 font-medium"
+                  className="text-yellow-400 hover:text-yellow-300 font-medium"
                 >
                   Vérifier un document
                 </Link>
@@ -161,15 +162,15 @@ const LoginPage = () => {
             </div>
 
             {/* Comptes de test */}
-            <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-              <p className="text-xs font-medium text-gray-700 mb-2">Comptes de test :</p>
-              <div className="text-xs text-gray-600 space-y-1">
-                <p>• Admin: admin@ecert.cd / password</p>
-                <p>• Utilisateur: user@test.cd / password</p>
+            <div className="mt-4 p-3 bg-white/5 rounded-lg border border-white/10">
+              <p className="text-xs font-medium text-yellow-400 mb-2">Comptes de test :</p>
+              <div className="text-xs text-white/70 space-y-1">
+                <p>• <span className="text-yellow-400">Admin:</span> admin@ecert.cd / password</p>
+                <p>• <span className="text-yellow-400">Utilisateur:</span> user@test.cd / password</p>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   );
