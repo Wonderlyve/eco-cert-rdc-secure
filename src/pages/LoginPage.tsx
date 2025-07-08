@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -40,14 +41,11 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen relative flex items-center justify-center p-4">
-      {/* Background Image - Plus visible et couvrant toute la page */}
+      {/* Background Image - Taille réduite et centrée */}
       <div 
-        className="absolute inset-0 bg-center bg-cover opacity-30 z-0"
+        className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[120%] h-[80%] bg-center bg-contain bg-no-repeat opacity-20 z-0"
         style={{
           backgroundImage: 'url(/lovable-uploads/1f2aad9e-6320-432d-ac48-3b04163488b7.png)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center center',
-          backgroundRepeat: 'no-repeat'
         }}
       />
       
