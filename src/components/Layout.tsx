@@ -12,7 +12,8 @@ import {
   Menu,
   X,
   Shield,
-  GraduationCap
+  GraduationCap,
+  IdCard
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -24,6 +25,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const navigation = [
     { name: 'Tableau de bord', href: '/dashboard', icon: Home },
     { name: 'Documents', href: '/documents', icon: FileText },
+    { name: 'Carte Élève', href: '/student-card', icon: IdCard },
     { name: 'Scanner', href: '/scan', icon: QrCode },
     { name: 'Paiements', href: '/payment', icon: CreditCard },
     { name: 'Profil', href: '/profile', icon: User },

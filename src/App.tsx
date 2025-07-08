@@ -14,6 +14,7 @@ import VerificationPage from '@/pages/VerificationPage';
 import ScanPage from '@/pages/ScanPage';
 import PaymentPage from '@/pages/PaymentPage';
 import ProfilePage from '@/pages/ProfilePage';
+import StudentCardPage from '@/pages/StudentCardPage';
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -74,6 +75,11 @@ const AppRoutes = () => {
       <Route path="/profile" element={
         <ProtectedRoute>
           <ProfilePage />
+        </ProtectedRoute>
+      } />
+      <Route path="/student-card" element={
+        <ProtectedRoute>
+          <StudentCardPage />
         </ProtectedRoute>
       } />
       <Route path="/" element={<Navigate to="/dashboard" />} />

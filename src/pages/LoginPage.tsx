@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -40,8 +39,23 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen relative flex items-center justify-center p-4">
+      {/* Background Image - Plus visible et couvrant toute la page */}
+      <div 
+        className="absolute inset-0 bg-center bg-cover opacity-30 z-0"
+        style={{
+          backgroundImage: 'url(/lovable-uploads/1f2aad9e-6320-432d-ac48-3b04163488b7.png)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center center',
+          backgroundRepeat: 'no-repeat'
+        }}
+      />
+      
+      {/* Overlay gradient pour améliorer la lisibilité */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-900/80 via-blue-800/80 to-blue-700/80 z-10" />
+      
+      {/* Contenu de la page */}
+      <div className="relative z-20 w-full max-w-md">
         {/* Logo et titre */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-yellow-400 to-red-500 rounded-2xl mb-4 shadow-lg">
@@ -51,7 +65,7 @@ const LoginPage = () => {
           <p className="text-blue-200">Certification numérique sécurisée</p>
         </div>
 
-        <Card className="shadow-2xl border-0">
+        <Card className="shadow-2xl border-0 bg-white/95 backdrop-blur-sm">
           <CardHeader className="space-y-1 pb-6">
             <CardTitle className="text-2xl font-bold text-center text-gray-900">
               Connexion
